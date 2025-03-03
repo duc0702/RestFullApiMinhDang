@@ -10,5 +10,6 @@ public interface UserService {
  User saveUser(User user);
  void deleteById(Long id);
  <T>Optional<T> getUserById(Long id,Class<T> type);
+ <T>Optional<T> getUserByEmail(String email,Class<T> type);
 User updateUser(User user, long id);
 }

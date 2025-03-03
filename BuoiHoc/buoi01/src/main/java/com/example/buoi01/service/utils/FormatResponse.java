@@ -1,4 +1,4 @@
-package com.example.buoi01.service.utils.error;
+package com.example.buoi01.service.utils;
 
 import com.example.buoi01.domain.response.ResponseData;
 import jakarta.servlet.http.HttpServletResponse;

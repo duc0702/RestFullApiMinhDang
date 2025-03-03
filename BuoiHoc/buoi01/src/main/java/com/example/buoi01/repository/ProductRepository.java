@@ -1,4 +1,4 @@
-package com.example.buoi01.Repository;
+package com.example.buoi01.repository;
 
 import com.example.buoi01.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

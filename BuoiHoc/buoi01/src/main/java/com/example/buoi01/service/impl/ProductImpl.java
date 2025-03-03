@@ -1,6 +1,6 @@
 package com.example.buoi01.service.impl;
 
-import com.example.buoi01.Repository.ProductRepository;
+import com.example.buoi01.repository.ProductRepository;
 import com.example.buoi01.domain.Product;
 import com.example.buoi01.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -36,6 +36,7 @@ public class ProductImpl implements ProductService {
     public <T> Optional<T> getUserById(Long id, Class<T> type) {
         return productRepository.findById(id,type);
     }
+
 
 
     @Override

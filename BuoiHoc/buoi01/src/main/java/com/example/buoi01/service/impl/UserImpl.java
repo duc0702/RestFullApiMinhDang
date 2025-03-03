@@ -1,6 +1,6 @@
 package com.example.buoi01.service.impl;
 
-import com.example.buoi01.Repository.UserRepository;
+import com.example.buoi01.repository.UserRepository;
 import com.example.buoi01.domain.User;
 import com.example.buoi01.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +51,12 @@ public class UserImpl implements UserService {
     public <T> Optional<T> getUserById(Long id, Class<T> type) {
         return userRepository.findById(id,type);
 
+    }
+
+    @Override
+    public <T> Optional <T> getUserByEmail(String email, Class<T> type) {
+    Optional<T> user = userRepository.findByEmail(email,type);
+        return user;
     }
 
 

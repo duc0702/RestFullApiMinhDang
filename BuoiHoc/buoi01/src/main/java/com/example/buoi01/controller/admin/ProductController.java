@@ -1,7 +1,6 @@
-package com.example.buoi01.Controller.admin;
+package com.example.buoi01.controller.admin;
 
 import com.example.buoi01.domain.Product;
-import com.example.buoi01.domain.User;
 import com.example.buoi01.service.ProductService;
 import com.example.buoi01.service.utils.error.messageCustomExcetion;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class ProductController {
         List<Product> productList= productService.getAllUser(Product.class) ;
         return ResponseEntity.ok().body(productList);
     }
-    @GetMapping("")
+    @GetMapping("{id}")
     public ResponseEntity<Product> getOneproduct(@PathVariable long id){
         Product product= productService.getUserById(id,Product.class).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));
         return ResponseEntity.ok(product);

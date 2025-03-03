@@ -1,6 +1,6 @@
-package com.example.buoi01.Controller.admin;
+package com.example.buoi01.controller.admin;
 
-import com.example.buoi01.domain.Dto.UserDto;
+import com.example.buoi01.domain.dto.UserDto;
 import com.example.buoi01.domain.User;
 import com.example.buoi01.service.UserService;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/users")

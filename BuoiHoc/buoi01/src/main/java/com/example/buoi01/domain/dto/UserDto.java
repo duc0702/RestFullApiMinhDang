@@ -1,8 +1,7 @@
-package com.example.buoi01.domain.Dto;
+package com.example.buoi01.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
