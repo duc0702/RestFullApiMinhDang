@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductService {
-    List<Product> getAllProduct();
+    <T> List<T> getAllUser( Class<T> type);
     Product saveProduct(Product product);
     void deleteProduct(Long id);
-   Product getOneProduct(Long id);
+    <T>Optional<T> getUserById(Long id,Class<T> type);
 
    Product updateProduct(Product product ,long id);
 }

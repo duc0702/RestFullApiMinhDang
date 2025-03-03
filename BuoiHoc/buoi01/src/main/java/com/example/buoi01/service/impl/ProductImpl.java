@@ -15,9 +15,11 @@ import java.util.Optional;
 public class ProductImpl implements ProductService {
 @Autowired
     ProductRepository productRepository;
+
+
     @Override
-    public List<Product> getAllProduct() {
-        return productRepository.findAll();
+    public <T> List<T> getAllUser(Class<T> type) {
+        return productRepository.findAllBy(type);
     }
 
     @Override
@@ -31,13 +33,10 @@ public class ProductImpl implements ProductService {
     }
 
     @Override
-    public Product getOneProduct(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent())return product.get();
-
-        return null;
-
+    public <T> Optional<T> getUserById(Long id, Class<T> type) {
+        return productRepository.findById(id,type);
     }
+
 
     @Override
     public Product updateProduct(Product product, long id) {
