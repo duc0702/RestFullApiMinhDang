@@ -12,11 +12,13 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SercurityConfiguration {
+
+    //Giải mã password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+        //route được phép đăng nhặp
     private String[] routeList = { "/", "/auth/**" };
 
     @Bean

@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-
+@Configuration
 public class JWTConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(JWTConfiguration.class);
 

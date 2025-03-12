@@ -2,8 +2,10 @@ package com.example.buoi01.service.utils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -69,23 +71,28 @@ public class SecurityUtils {
         Instant now = Instant.now();
         Instant validity = now.plus(expirationSeconds, ChronoUnit.SECONDS);
 
+        List<String> listAuthority = new ArrayList<String>();
+        listAuthority.add("ROLE_ADMIN_CREATE");
+        listAuthority.add("ROLE_ADMIN_UPDATE");
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
                 .claim("user", userClaim)
+                .claim("permission",
+                        listAuthority)
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(MAC_ALGORITHM).build();
         return encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    public String createAccessToken(String email, UserLoginDetail resLoginDTO) {
-        return createToken(email, resLoginDTO, accessTokenExpiration, accessTokenEncoder);
+    public String createAccessToken(String email, UserLoginDetail userLoginDetail) {
+        return createToken(email, userLoginDetail, accessTokenExpiration, accessTokenEncoder);
     }
 
-    public String createRefreshToken(String email, UserLoginDetail userDetail) {
-        return createToken(email,userDetail, refreshTokenExpiration, refreshTokenEncoder);
+    public String createRefreshToken(String email, UserLoginDetail detailUser ) {
+        return createToken(email,detailUser, refreshTokenExpiration, refreshTokenEncoder);
     }
 
     public Jwt validateAccessToken(String token) {

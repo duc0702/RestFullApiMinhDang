@@ -8,20 +8,9 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ResLoginDTO {
+public class ResponseLoginDto {
     @JsonProperty("access_token")
     private String accessToken;
 
-    private UserLogin user;
-
-    @Getter
-    @Setter
-    @Builder
-    public static class UserLogin {
-
-        private String name;
-        private String email;
-
-    }
 
 }
