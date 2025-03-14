@@ -3,9 +3,17 @@ package com.example.buoi01.service.utils.error;
 import com.example.buoi01.domain.response.ResponseData;
 import com.example.buoi01.service.utils.error.messageCustomExcetion;
 import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -20,7 +28,7 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors("Không tim thấy sản phẩm");
+        res.setErorrs("Không tim thấy sản phẩm");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
@@ -31,7 +39,7 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors("Lỗi nào đó");
+        res.setErorrs("Lỗi nào đó");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
@@ -42,7 +50,7 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors(" NoResourceFound");
+        res.setErorrs(" NoResourceFound");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
@@ -54,7 +62,7 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors(" NoResourceFound");
+        res.setErorrs(" NoResourceFound");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
@@ -65,7 +73,7 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors(" NoResourceFound");
+        res.setErorrs(" NoResourceFound");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
@@ -76,11 +84,38 @@ public class GlobalException {
         ResponseData res = new ResponseData();
         int statusCode = HttpStatus.BAD_REQUEST.value();
         res.setStatus(statusCode);
-        res.setErors(" NoResourceFound");
+        res.setErorrs(" NoResourceFound");
         String message = ex.getMessage();
         res.setMessage(message);
         res.setData(null);
         return ResponseEntity.badRequest().body(res);
+    }
+    @ExceptionHandler(IncorrectResultSizeDataAccessException.class)
+    public ResponseEntity<ResponseData>  MethodArgumentTypeMismatchException(IncorrectResultSizeDataAccessException ex) {
+        ResponseData res = new ResponseData();
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+        res.setStatus(statusCode);
+        res.setErorrs(" Có nhiều hơn 1 bản ghi");
+        String message = ex.getMessage();
+        res.setMessage(message);
+        res.setData(null);
+        return ResponseEntity.badRequest().body(res);
+    }
+      @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseData<Object>> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        //Validate register
+
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+        BindingResult result = ex.getBindingResult();
+        List<FieldError> fieldErrors = result.getFieldErrors();
+            //Chuyển đổi thành đoạn json có thể convert sang reactJs
+        List<Map<String, String>> errors = fieldErrors.stream()
+                .map(fieldError -> Map.of(fieldError.getField(), fieldError.getDefaultMessage())).toList();
+          // ! field : message
+         
+          ResponseData<Object> data = ResponseData.<Object>builder().status(statusCode).data(null).erorrs("Lỗi Validate")
+          .message(errors).build();
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
 
 }

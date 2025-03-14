@@ -22,6 +22,7 @@ public class FormatResponse implements ResponseBodyAdvice {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int status = servletResponse.getStatus();
         ResponseData<Object> rs = new ResponseData<Object>();
+        
         rs.setStatus(status);
 
         if (body instanceof String || status >= 400) {

@@ -3,6 +3,8 @@ package com.example.buoi01.controller.admin;
 import com.example.buoi01.domain.dto.UserDto;
 import com.example.buoi01.domain.User;
 import com.example.buoi01.service.UserService;
+import com.example.buoi01.service.utils.error.InvalidEmailException;
+
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/users")
@@ -21,8 +24,8 @@ public class UserController {
 
 
     @GetMapping("")
-    public ResponseEntity<List<UserDto>> getListUser() {
-        List<UserDto> listUser = userService.getAllUser(UserDto.class);
+    public ResponseEntity<Set<UserDto>> getListUser() {
+        Set<UserDto> listUser = userService.getAllUser(UserDto.class);
         return ResponseEntity.ok().body(listUser);
     }
     @GetMapping("{id}")
@@ -33,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) throws InvalidEmailException {
         User saveuser = userService.saveUser(user);
         return ResponseEntity.created(null).body(saveuser);
     }
@@ -50,5 +53,12 @@ public class UserController {
         return ResponseEntity.ok().body(updateUser);
 
 
+    }
+    @GetMapping("/")
+    public ResponseEntity<UserDto> getUserByEmail( @RequestParam("email") String email) {
+
+        UserDto userDto = (UserDto) userService.getUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+               
+        return ResponseEntity.ok().body(userDto);
     }
 }

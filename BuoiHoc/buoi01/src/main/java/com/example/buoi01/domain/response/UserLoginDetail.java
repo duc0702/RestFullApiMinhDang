@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class UserLoginDetail {
 private long id;
+
     private String name;
     private String email;
 

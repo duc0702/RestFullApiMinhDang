@@ -77,6 +77,7 @@ public class SecurityUtils {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
+                //Truyền vào email của user
                 .subject(email)
                 .claim("user", userClaim)
                 .claim("permission",
@@ -87,12 +88,12 @@ public class SecurityUtils {
         return encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    public String createAccessToken(String email, UserLoginDetail userLoginDetail) {
-        return createToken(email, userLoginDetail, accessTokenExpiration, accessTokenEncoder);
+    public String createAccessToken(String email, ResLoginDTO.UserLogin resLoginDTO) {
+        return createToken(email, resLoginDTO, accessTokenExpiration, accessTokenEncoder);
     }
 
-    public String createRefreshToken(String email, UserLoginDetail detailUser ) {
-        return createToken(email,detailUser, refreshTokenExpiration, refreshTokenEncoder);
+    public String createRefreshToken(String email, ResLoginDTO resLoginDTO) {
+        return createToken(email, resLoginDTO.getUser(), refreshTokenExpiration, refreshTokenEncoder);
     }
 
     public Jwt validateAccessToken(String token) {

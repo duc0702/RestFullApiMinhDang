@@ -16,4 +16,6 @@ public class BaseEntity {
     private long id;
 
     private String name;
+    
+   
 }
