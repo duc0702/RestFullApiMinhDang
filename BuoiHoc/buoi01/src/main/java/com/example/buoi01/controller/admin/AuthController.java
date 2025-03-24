@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @RestController
@@ -123,11 +126,23 @@ public class AuthController {
         ResLoginDTO.UserLogin userLogin = ResLoginDTO.UserLogin.builder().email(email).name(name).build();
         String access_token = this.securityUtils.createAccessToken(email, userLogin);
         ResLoginDTO resLoginDTO = ResLoginDTO.builder().user(userLogin).accessToken(access_token).build();
-        String refresh_token = this.securityUtils.createRefreshToken(email, resLoginDTO);
+        
+        String new_RefreshToken= refreshToken;
 
-        this.userService.updateRefreshToken(email, refresh_token);
+         Instant expiresAt = decodedToken.getExpiresAt() ;
+         Instant now = Instant.now();
+         Instant beforeExpiresAt=now.plus(1,ChronoUnit.MINUTES);
 
-        ResponseCookie cookie = ResponseCookie.from("refresh_token", refresh_token)
+         if(expiresAt!=null && expiresAt.isAfter(expiresAt)){
+            String refresh_token = this.securityUtils.createRefreshToken(email, resLoginDTO);
+
+            new_RefreshToken=refresh_token;
+            this.userService.updateRefreshToken(email, refresh_token);
+    
+         }
+
+       
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", new_RefreshToken)
                 .httpOnly(true)
                 .path("/")
                 .maxAge(refreshTokenExpiration).build();
@@ -138,6 +153,42 @@ public class AuthController {
     public ResponseEntity<String> resgister(@RequestBody @Valid User user) {
            
         return ResponseEntity.ok("Đăng ký thành công");
+
+    }
+    
+    @PostMapping("/logout")
+    public ResponseEntity<String> resgister( @CookieValue(name = "refresh_token", required = false) String refreshToken) throws Exception {
+        if (refreshToken == null || refreshToken.isEmpty()) {
+
+            throw new Exception("Không tìm thấy refresh token");
+
+        }
+        System.out.println("Refresh Token từ cookie: " + refreshToken); // In ra console
+        // ! Kiem tra refresh token
+        //Giải mã refresh token
+        Jwt decodedToken = this.securityUtils.checkValidRefreshToken(refreshToken);
+
+        //Khi giải mã không thành công
+        //Lấy được email từ refresh token
+        //getSubject() là lấy email từ token
+        String email = decodedToken.getSubject();
+
+        // ! Tìm refresh token trong database
+       
+        Optional<User> currentUser = this.userService.getUserByRefreshTokenAndEmail(email, refreshToken);
+       
+        this.userService.updateRefreshToken(email, null);
+    
+        if (!currentUser.isPresent()) {
+            throw new Exception("Không tìm thấy refresh token");
+        }
+        ResponseCookie cookie = ResponseCookie.from("refresh_token",
+        "null")
+        .httpOnly(true)
+        .path("/")
+        .maxAge(refreshTokenExpiration).build();
+
+        return ResponseEntity.ok().header("Set-Cookie", cookie.toString()).body("Đăng xuất thành công");
 
     }
 }

@@ -2,11 +2,16 @@ package com.example.buoi01.service.impl;
 
 import com.example.buoi01.repository.UserRepository;
 import com.example.buoi01.domain.User;
+import com.example.buoi01.domain.dto.UserDto;
+import com.example.buoi01.domain.specs.Userspecs;
 import com.example.buoi01.service.UserService;
 import com.example.buoi01.service.utils.error.InvalidEmailException;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -101,8 +106,20 @@ public class UserImpl implements UserService {
     @Override
     public Optional<User> getUserByRefreshTokenAndEmail(String email, String refreshToken) {
        
-        return userRepository.getUserByRefreshTokenAndEmail(email, refreshToken);
+        return userRepository.findByEmailAndRefreshToken(email, refreshToken);
         
         
+    }
+
+    @Override
+    public Page<UserDto> findAllByWithPageable(Pageable pageable) {
+       return userRepository.findAllBy(pageable);
+    }
+
+    @Override
+    public List<User> searchByName(String name) {
+      Specification<User> spec = Userspecs.nameLike(name);
+      return userRepository.findAll(spec);
+       
     }
 }

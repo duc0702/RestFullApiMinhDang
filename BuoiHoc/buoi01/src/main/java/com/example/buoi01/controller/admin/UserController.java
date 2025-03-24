@@ -7,12 +7,15 @@ import com.example.buoi01.service.utils.error.InvalidEmailException;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -60,5 +63,19 @@ public class UserController {
         UserDto userDto = (UserDto) userService.getUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
                
         return ResponseEntity.ok().body(userDto);
+    }
+    @GetMapping("/m")
+    public  ResponseEntity<List<UserDto>> getAllPage(@RequestParam(value = "page") Optional<String> page,
+                                                    @RequestParam(value = "size") Optional<String> size) {
+                                                        int pageInteger= page.isPresent()?Integer.parseInt(page.get()) :0;
+                                                        int sizeInteger= size.isPresent()?Integer.parseInt(size.get()) :10;
+                                                        Pageable pageable = PageRequest.of(pageInteger, sizeInteger);
+                                                        List<UserDto> listUser = userService.findAllByWithPageable(pageable).getContent();
+                                                        return ResponseEntity.ok().body(listUser);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<User>> searchByName(@RequestParam("name") String name) {
+        List<User> listUser = userService.searchByName(name);
+        return ResponseEntity.ok().body(listUser);
     }
 }
